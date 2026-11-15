@@ -1,0 +1,35 @@
+plugins {
+    id "com.android.application"
+}
+
+android {
+    namespace "ru.autowinner.chessbot"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "ru.autowinner.chessbot"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    sourceSets {
+        main.assets.srcDir(layout.buildDirectory.dir("generated/webapp"))
+    }
+}
+
+dependencies {
+    implementation "androidx.webkit:webkit:1.12.1"
+}
+
+tasks.register("copyWebApp", Sync) {
+    from(rootProject.projectDir.parentFile) {
+        include "index.html", "styles.css", "app.js", "chess-engine.js", "engine-worker.js"
+    }
+    into(layout.buildDirectory.dir("generated/webapp"))
+}
+
+tasks.named("preBuild").configure {
+    dependsOn("copyWebApp")
+}
