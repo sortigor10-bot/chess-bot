@@ -1,0 +1,41 @@
+{
+  "name": "chess-bot-desktop",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Windows desktop version of the Chess Bot game",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "build:web": "vite build",
+    "build:win": "npm run build:web && electron-builder --win portable --x64"
+  },
+  "dependencies": {
+    "chess.js": "1.4.0"
+  },
+  "devDependencies": {
+    "electron": "45.3.2",
+    "electron-builder": "26.18.0",
+    "vite": "8.3.8"
+  },
+  "build": {
+    "appId": "ru.autowinner.chessbot",
+    "productName": "Шахматный бот",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "desktop/**/*",
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "desktop/icon.ico",
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "ChessBot-${version}-${arch}.${ext}"
+    }
+  }
+}
