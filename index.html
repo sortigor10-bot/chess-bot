@@ -1,107 +1,12 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#111a24">
-    <title>Шахматный бот</title>
-    <link rel="stylesheet" href="./styles.css">
-    <script type="module" src="./app.js"></script>
-  </head>
-  <body>
-    <main class="app">
-      <header class="topbar">
-        <a class="brand" href="./" aria-label="Шахматный бот">
-          <span class="brand-mark" aria-hidden="true">♞</span>
-          <span>Шахматный бот</span>
-        </a>
-        <div class="engine-state">
-          <span class="state-dot" id="engine-dot"></span>
-          <span id="engine-state">Загрузка бота…</span>
-        </div>
-      </header>
+♞
+Шахматный бот
+Бот готов
+♞
 
-      <section class="entry-screen" id="welcome-screen">
-        <span class="entry-mark" aria-hidden="true">♞</span>
-        <p class="eyebrow">ВАША ПАРТИЯ</p>
-        <h1>Шахматный бот</h1>
-        <p class="entry-copy">Выберите сторону, показывайте ходы соперника, а бот сыграет за вас.</p>
-        <button class="button button-primary play-button" id="play-button">Играть</button>
-      </section>
+ВАША ПАРТИЯ
 
-      <section class="entry-screen" id="side-screen" hidden>
-        <p class="eyebrow">НОВАЯ ПАРТИЯ</p>
-        <h1>За кого играет бот?</h1>
-        <p class="entry-copy">Выберите цвет, которым бот будет отвечать на ходы соперника.</p>
-        <div class="side-options">
-          <button class="side-option" type="button" data-bot-color="w">
-            <span class="side-piece white-piece" aria-hidden="true">♔</span>
-            <strong>Белыми</strong>
-            <span class="side-hint">Бот ходит первым</span>
-          </button>
-          <button class="side-option" type="button" data-bot-color="b">
-            <span class="side-piece black-piece" aria-hidden="true">♚</span>
-            <strong>Чёрными</strong>
-            <span class="side-hint">Первым ходит соперник</span>
-          </button>
-        </div>
-        <button class="button button-secondary back-button" id="back-button" type="button">Назад</button>
-      </section>
+Шахматный бот
 
-      <section class="layout" id="game-screen" aria-label="Шахматная доска и управление" hidden>
-        <div class="board-column">
-          <div class="player-label" id="opponent-label">Соперник · чёрные</div>
-          <div class="board-frame">
-            <div class="board" id="board" role="grid" aria-label="Шахматная доска"></div>
-            <div class="board-result" id="board-result" hidden role="status" aria-live="assertive">
-              <div class="board-result-card">
-                <span class="board-result-mark" id="board-result-mark" aria-hidden="true">♛</span>
-                <h2 id="board-result-title"></h2>
-                <p id="board-result-subtitle"></p>
-              </div>
-            </div>
-          </div>
-          <div class="player-label player-label-bottom" id="player-label">Бот · белые</div>
-          <button class="button button-secondary exit-button" id="exit-game" type="button">
-            Выйти из игры
-          </button>
-        </div>
+Выберите сторону, показывайте ходы соперника, а бот сыграет за вас.
 
-        <aside class="panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">АВТОМАТИЧЕСКАЯ ПАРТИЯ</p>
-              <h1>Управление партией</h1>
-            </div>
-            <span class="knight-icon" aria-hidden="true">♘</span>
-          </div>
-
-          <div class="bot-side-card">
-            <span>Цвет бота</span>
-            <strong id="bot-color-label">Белыми</strong>
-          </div>
-
-          <div class="status-card" id="status-card" aria-live="polite">
-            <span class="status-indicator" id="turn-indicator"></span>
-            <div>
-              <div class="status-title" id="game-status">Подготовка партии…</div>
-              <div class="status-subtitle" id="status-subtitle">Движок загружается</div>
-            </div>
-          </div>
-
-          <section class="moves-section" aria-label="История ходов">
-            <div class="section-heading">
-              <h2>Ходы</h2>
-              <span id="move-count">0 ходов</span>
-            </div>
-            <ol class="move-list" id="move-list"></ol>
-          </section>
-
-          <p class="disclaimer">
-            Выберите фигуру соперника, чтобы увидеть возможные ходы. После вашего ввода бот автоматически ответит.
-          </p>
-        </aside>
-      </section>
-    </main>
-  </body>
-</html>
+Играть
