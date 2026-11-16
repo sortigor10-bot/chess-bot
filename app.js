@@ -22,6 +22,7 @@ const boardResult = document.querySelector("#board-result");
 const boardResultMark = document.querySelector("#board-result-mark");
 const boardResultTitle = document.querySelector("#board-result-title");
 const boardResultSubtitle = document.querySelector("#board-result-subtitle");
+const viewBoardButton = document.querySelector("#view-board-button");
 const turnIndicator = document.querySelector("#turn-indicator");
 const moveList = document.querySelector("#move-list");
 const moveCount = document.querySelector("#move-count");
@@ -37,6 +38,8 @@ let isThinking = false;
 let nextSearchId = 0;
 let activeSearchId = null;
 let workerReadyTimer = null;
+let resultRevealTimer = null;
+let pendingCheckmateFen = null;
 
 const engineWorker = new Worker(new URL("./engine-worker.js", import.meta.url), {
   type: "module",
@@ -113,6 +116,9 @@ document.querySelectorAll("[data-bot-color]").forEach((button) => {
 });
 
 exitGameButton.addEventListener("click", exitGame);
+viewBoardButton.addEventListener("click", () => {
+  boardResult.hidden = true;
+});
 
 function startGame(color) {
   botColor = color;
@@ -123,6 +129,7 @@ function startGame(color) {
   document.querySelector("#bot-color-label").textContent =
     botColor === "w" ? "Белыми" : "Чёрными";
   game.reset();
+  resetBoardResult();
   selectedSquare = null;
   lastMove = null;
   pendingAnimation = null;
@@ -137,6 +144,7 @@ function exitGame() {
   isThinking = false;
   gameStarted = false;
   game.reset();
+  resetBoardResult();
   selectedSquare = null;
   lastMove = null;
   pendingAnimation = null;
@@ -164,6 +172,7 @@ function renderBoard() {
   boardElement.replaceChildren();
   const board = game.board();
   const rows = botColor === "w" ? board : [...board].reverse().map((row) => [...row].reverse());
+  const checkmatedColor = game.isCheckmate() ? game.turn() : null;
   const opponentColor = botColor === "w" ? "b" : "w";
   const legalTargets = new Map();
   if (selectedSquare && game.turn() === opponentColor && game.get(selectedSquare)?.color === opponentColor) {
@@ -189,6 +198,9 @@ function renderBoard() {
           ? `${squareName}, ${piece.color === "w" ? "белая" : "чёрная"} фигура ${piece.type}`
           : squareName,
       );
+      if (piece?.type === "k" && piece.color === checkmatedColor) {
+        square.classList.add("king-checkmated");
+      }
       if (lastMove?.from === squareName || lastMove?.to === squareName) {
         square.classList.add("last-move");
       }
@@ -246,8 +258,6 @@ function renderBoard() {
 }
 
 function renderStatus() {
-  boardResult.hidden = true;
-  boardResult.className = "board-result";
   document.querySelector("#player-label").textContent =
     botColor === "w" ? "Бот · белые" : "Бот · чёрные";
   document.querySelector("#opponent-label").textContent =
@@ -261,14 +271,15 @@ function renderStatus() {
 
   if (game.isCheckmate()) {
     const botWon = game.turn() !== botColor;
-    showBoardResult(
+    scheduleCheckmateResult(
+      game.fen(),
       botWon ? "win" : "loss",
       botWon ? "ПОБЕДА БОТА!" : "ПОРАЖЕНИЕ БОТА",
       botWon ? "Бот поставил мат" : "Соперник поставил мат",
       botWon ? "♛" : "♟",
     );
     gameStatus.textContent = "Партия завершена";
-    statusSubtitle.textContent = "Результат показан на доске";
+    statusSubtitle.textContent = "Результат появится через 2 секунды";
   } else if (game.isStalemate()) {
     showBoardResult(
       "draw",
@@ -303,10 +314,35 @@ function renderStatus() {
 
 function showBoardResult(kind, title, subtitle, mark) {
   boardResult.hidden = false;
-  boardResult.classList.add(`result-${kind}`);
+  boardResult.className = `board-result result-${kind}`;
+  viewBoardButton.hidden = kind !== "win" && kind !== "loss";
   boardResultMark.textContent = mark;
   boardResultTitle.textContent = title;
   boardResultSubtitle.textContent = subtitle;
+}
+
+function scheduleCheckmateResult(fen, kind, title, subtitle, mark) {
+  if (pendingCheckmateFen === fen) return;
+  pendingCheckmateFen = fen;
+  boardResult.hidden = true;
+  viewBoardButton.hidden = true;
+  resultRevealTimer = window.setTimeout(() => {
+    resultRevealTimer = null;
+    if (!gameStarted || !game.isCheckmate() || game.fen() !== fen) return;
+    showBoardResult(kind, title, subtitle, mark);
+    statusSubtitle.textContent = "Результат показан на доске";
+  }, 2000);
+}
+
+function resetBoardResult() {
+  if (resultRevealTimer !== null) {
+    window.clearTimeout(resultRevealTimer);
+    resultRevealTimer = null;
+  }
+  pendingCheckmateFen = null;
+  boardResult.hidden = true;
+  boardResult.className = "board-result";
+  viewBoardButton.hidden = true;
 }
 
 function renderMoves() {
