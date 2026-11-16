@@ -335,6 +335,14 @@ select {
   line-height: 1.5;
 }
 
+.board-result-button {
+  margin-top: 20px;
+}
+
+.board-result-button[hidden] {
+  display: none;
+}
+
 .board-result.result-loss .board-result-mark {
   background: rgba(242, 123, 117, 0.12);
   color: #f27b75;
@@ -384,6 +392,10 @@ select {
 
 .square.dark {
   background: var(--dark-square);
+}
+
+.square.king-checkmated {
+  background: #d94f4f;
 }
 
 .square.last-move::before,
