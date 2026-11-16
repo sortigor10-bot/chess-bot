@@ -5,3 +5,6 @@ local.properties
 *.aab
 *.jks
 *.keystore
+node_modules/
+dist/
+release/
